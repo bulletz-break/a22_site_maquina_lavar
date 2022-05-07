@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/default.css"/>
+    <link rel="stylesheet" href="assets/css/index.css"/>
+    <script src="assets/js/index.js"></script>
+    <title> Título </title>
+</head>
+<body>
+    <main>
+        <article id="lavagem_programacao">
+            <section class="lavagem_title_container" id="lavagem_programacao_title_container">
+                <h1 class="lavagem_title lavagem_title_1" id="lavagem_programacao_title"> Programar nova lavagem </h1>
+            </section>
+            <div id="lavagem_inconsistencia_msg_container">
+                <span id="lavagem_inconsistencia_msg"></span>
+            </div>
+            <section id="lavagem_programacao_inputs">
+                <form id="lavagem_form" action="javascript:void(0)">
+                    <div class="lavagem_input_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> Rotações por minuto </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_number" id="lavagem_rpm" type="number" value="0" />
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> Tempo de lavagem (min) </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_number" id="lavagem_tempo" type="number" value="0" />
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> Centímetros de água </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_number" id="lavagem_cmagua" type="number" value="0" />
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> Temperatura da água (°c) </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_number" id="lavagem_tempagua" type="number" value="0" />
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> Água </h2>
+                        </div>
+                        <div class="lavagem_input_container lavagem_input_radio_container">
+                            <div class="lavagem_input_check_item">
+                                <h3 class="lavagem_input_name"> <label for="lavagem_agua_fria"> Fria </label> </h3> <br/>
+                                <input class="lavagem_input lavagem_input_radio" id="lavagem_agua_fria" type="radio" name="tipo_agua" checked/>
+                            </div>
+                            <div class="lavagem_input_check_item">
+                                <h3 class="lavagem_input_name"> <label for="lavagem_agua_quente"> Quente </label> </h3> <br/>
+                                <input class="lavagem_input lavagem_input_radio" id="lavagem_agua_quente" type="radio" name="tipo_agua"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box lavagem_input_check_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> <label for="lavagem_aquecer"> Aquecer água </label> </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_check" id="lavagem_aquecer" type="checkbox"/>
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box lavagem_input_check_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> <label for="lavagem_lavar"> Lavar </label> </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_check" id="lavagem_lavar" type="checkbox"/>
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box lavagem_input_check_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name">
+                                <label for="lavagem_centrifugar"> Centrifugar </label>
+                            </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_check" id="lavagem_centrifugar" type="checkbox"/>
+                        </div>
+                    </div>
+                    <div class="lavagem_input_box lavagem_input_check_box">
+                        <div class="lavagem_input_name_container">
+                            <h2 class="lavagem_input_name"> <label for="lavagem_drenar"> Drenar </label> </h2>
+                        </div>
+                        <div class="lavagem_input_container">
+                            <input class="lavagem_input lavagem_input_check" id="lavagem_drenar" type="checkbox"/>
+                        </div>
+                    </div>
+                    <div id="lavagem_programacao_button">
+                        <input class="lavagem_input_submit" id="botao_proximo_passo" type="submit" value="Próximo passo"/>
+                        <span id="lavagem_passo_atual"> 1 </span>
+                        <input class="lavagem_input_submit" id="botao_salvar_passos" type="submit" value="Salvar" style="display: none;"/>
+                    </div>
+                </form>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
