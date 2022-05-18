@@ -2,113 +2,274 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/default.css"/>
-    <link rel="stylesheet" href="assets/css/index.css"/>
-    <script src="assets/js/index.js"></script>
-    <title> Título </title>
+    <link rel="stylesheet" href="assets/default.css"/>
+    <link rel="stylesheet" href="assets/index.css"/>
+    <title> Widget - Máquina de Lavar - A22 </title>
 </head>
 <body>
-    <main>
-        <article id="lavagem_programacao">
-            <section class="lavagem_title_container" id="lavagem_programacao_title_container">
-                <h1 class="lavagem_title lavagem_title_1" id="lavagem_programacao_title"> Programar nova lavagem </h1>
-            </section>
-            <div id="lavagem_inconsistencia_msg_container">
-                <span id="lavagem_inconsistencia_msg"></span>
-            </div>
-            <section id="lavagem_programacao_inputs">
-                <form id="lavagem_form" action="javascript:void(0)">
-                    <div class="lavagem_input_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> Rotações por minuto </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_number" id="lavagem_rpm" type="number" value="0" />
-                        </div>
-                    </div>
-                    <div class="lavagem_input_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> Tempo de lavagem (min) </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_number" id="lavagem_tempo" type="number" value="0" />
-                        </div>
-                    </div>
-                    <div class="lavagem_input_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> Centímetros de água </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_number" id="lavagem_cmagua" type="number" value="0" />
-                        </div>
-                    </div>
-                    <div class="lavagem_input_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> Temperatura da água (°c) </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_number" id="lavagem_tempagua" type="number" value="0" />
-                        </div>
-                    </div>
-                    <div class="lavagem_input_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> Água </h2>
-                        </div>
-                        <div class="lavagem_input_container lavagem_input_radio_container">
-                            <div class="lavagem_input_check_item">
-                                <h3 class="lavagem_input_name"> <label for="lavagem_agua_fria"> Fria </label> </h3> <br/>
-                                <input class="lavagem_input lavagem_input_radio" id="lavagem_agua_fria" type="radio" name="tipo_agua" checked/>
+    <article id="programar_passo">
+        <section class="programar_passo_title_container">
+            <h1 class="programar_passo_title programar_passo_title_1"> Programando nova lavagem </h1>
+        </section>
+        <section class="programar_passo_form_container">
+            <form action="javascript:void(0)">
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_rpm"> Rotações por minuto </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
                             </div>
-                            <div class="lavagem_input_check_item">
-                                <h3 class="lavagem_input_name"> <label for="lavagem_agua_quente"> Quente </label> </h3> <br/>
-                                <input class="lavagem_input lavagem_input_radio" id="lavagem_agua_quente" type="radio" name="tipo_agua"/>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_rpm" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_timeDuration"> Tempo de duração </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_timeDuration" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_cmAgua"> Centímetros de água </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_cmAgua" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_tempAgua"> Temperatura da água </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_tempAgua" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_chooseValue">
+                    <div class="programar_passo_form_chooseValue_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            Tipo de água
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_chooseValue_block">
+                        <div class="programar_passo_form_chooseValue_item">
+                            <div class="programar_passo_form_chooseValue_title">
+                                <h3 class="programar_passo_title programar_passo_title_3"> <label for="step_tipoAgua_quente"> Quente </label> </h3>
+                            </div>
+                            <div class="programar_passo_form_chooseValue_input_container">
+                                <input class="programar_passo_form_input" type="radio" id="step_tipoAgua_quente" name="tipo_agua"/>
+                            </div>
+                        </div>
+                        <div class="programar_passo_form_chooseValue_item">
+                            <h3 class="programar_passo_title programar_passo_title_3"> limpar seleção </h3>
+                        </div>
+                        <div class="programar_passo_form_chooseValue_item">
+                            <div class="programar_passo_form_chooseValue_title">
+                                <h3 class="programar_passo_title programar_passo_title_3"> <label for="step_tipoAgua_fria"> Fria </label> </h3>
+                            </div>
+                            <div class="programar_passo_form_chooseValue_input_container">
+                                <input class="programar_passo_form_input" id="step_tipoAgua_fria" type="radio" name="tipo_agua"/>
                             </div>
                         </div>
                     </div>
-                    <div class="lavagem_input_box lavagem_input_check_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> <label for="lavagem_aquecer"> Aquecer água </label> </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_check" id="lavagem_aquecer" type="checkbox"/>
-                        </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_trueFalseValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_aquecerAgua"> Aquecer Água </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
                     </div>
-                    <div class="lavagem_input_box lavagem_input_check_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> <label for="lavagem_lavar"> Lavar </label> </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_check" id="lavagem_lavar" type="checkbox"/>
-                        </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_input" id="step_aquecerAgua" type="checkbox"/>
                     </div>
-                    <div class="lavagem_input_box lavagem_input_check_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name">
-                                <label for="lavagem_centrifugar"> Centrifugar </label>
-                            </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_check" id="lavagem_centrifugar" type="checkbox"/>
-                        </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_trueFalseValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_lavar"> Lavar </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
                     </div>
-                    <div class="lavagem_input_box lavagem_input_check_box">
-                        <div class="lavagem_input_name_container">
-                            <h2 class="lavagem_input_name"> <label for="lavagem_drenar"> Drenar </label> </h2>
-                        </div>
-                        <div class="lavagem_input_container">
-                            <input class="lavagem_input lavagem_input_check" id="lavagem_drenar" type="checkbox"/>
-                        </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_input" id="step_lavar" type="checkbox"/>
                     </div>
-                    <div id="lavagem_programacao_button">
-                        <input class="lavagem_input_submit" id="botao_proximo_passo" type="submit" value="Próximo passo"/>
-                        <span id="lavagem_passo_atual"> 1 </span>
-                        <input class="lavagem_input_submit" id="botao_salvar_passos" type="submit" value="Salvar" style="display: none;"/>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_trueFalseValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_centrifugar"> Centrifugar </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
                     </div>
-                </form>
-            </section>
-        </article>
-    </main>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_input" id="step_centrifugar" type="checkbox"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_trueFalseValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_centrifugar"> Drenar </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_input" id="step_drenar" type="checkbox"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_qtdSabao_1"> Quantidade do 1º sabão </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_qtdSabao_1" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_qtdSabao_2"> Quantiadde do 2º sabão </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_qtdSabao_2" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_qtdSabao_3"> Quantidade do 3º sabão </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_qtdSabao_3" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_qtdSabao_4"> Quantidade do 4º sabão </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_qtdSabao_4" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_form_numberValue">
+                    <div class="programar_passo_form_block programar_passo_title_container">
+                        <h2 class="programar_passo_title programar_passo_title_2 programar_passo_help">
+                            <label for="step_qtdSabao_5"> Quantiadde do 5º sabão </label>
+                            <div class="programar_passo_help_svg_container">
+                                <abbr title="Ajuda foda aqui">
+                                    <svg class="programar_passo_help_svg" viewBox="0 0 20 20"><path d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"></path></svg>
+                                </abbr>
+                            </div>
+                        </h2>
+                    </div>
+                    <div class="programar_passo_form_block programar_passo_form_input_container">
+                        <input class="programar_passo_form_numberValue_input programar_passo_form_input" id="step_qtdSabao_5" type="number"/>
+                    </div>
+                </div>
+                <div class="programar_passo_form_box programar_passo_section_buttons">
+                    <button class="programar_passo_form_button" id="programar_passo_form_salvar"> Próximo </button>
+                    <button class="programar_passo_form_button" id="programar_passo_form_salvar"> Salvar </button>
+                    <button class="programar_passo_form_button" id="programar_passo_form_salvar"> Voltar </button>
+                    <span class="programar_passo_form_stepAct"> passo: 1 </span>
+                </div>
+            </form>
+        </section>
+    </article>
 </body>
 </html>
+
+
+<!-- 
+"1":{
+    "RPM":50,
+    "Tempo":4,
+    "CmAgua":20,
+    "TempAgua":30,
+    "AguaFria":true,
+    "AguaQuente":true,
+    "AquecerAgua":true,
+    "Lavar":true,
+    "Centrifugar":false,
+    "Dreno":false,
+    "Soap1":30,
+    "Soap2":40,
+    "Soap3":0,
+    "Soap4":0,
+    "Soap5":0
+}, -->
