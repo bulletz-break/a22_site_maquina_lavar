@@ -13,8 +13,8 @@ window.onload = function() {
     washMach_form_input = washMach_initSettingsStep();
 
     // Escondendo outras opções para lavagem
-    // washMach_hideElement([washMach_form_box.lcd, washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao]);
-    // washMach_hideElement($('#input_TempAgua'));
+    washMach_hideElement([washMach_form_box.lcd, washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao]);
+    washMach_hideElement($('#input_TempAgua'));
     for(let i=1; i < 6; i++) {
         $(`#a22_widget_washMach_input_usar_sabao_${i}`).css({'display' : 'none'});
         $(`#a22_widget_washMach_input_Soap${i}`).css({'display' : 'none'});
