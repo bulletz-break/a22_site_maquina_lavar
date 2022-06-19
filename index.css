@@ -72,6 +72,7 @@
 .a22_widget_washMach_input_locked {
     cursor: default;
     opacity: .6;
+    pointer-events: none;
 }
 
 .a22_widget_washMach_input_check:hover, .a22_widget_washMach_input_checked, .a22_widget_washMach_function_button:hover {
@@ -83,6 +84,8 @@
 .a22_widget_washMach_input_checked { border: 2px solid blue; }
 
 .a22_widget_washMach_input_number {
+    width: 90%;
+    margin: auto;
     padding: 1.5% 2%;
 }
 
@@ -105,8 +108,6 @@
 #a22_widget_washMach_widgetFunctions_container {
     display: flex;
     justify-content: space-between;
-    position: absolute;
-    bottom: 0;
     width: 100%;
     max-width: 1000px;
 }
