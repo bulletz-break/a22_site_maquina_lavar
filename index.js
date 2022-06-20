@@ -13,7 +13,7 @@ window.onload = function() {
     washMach_form_input = washMach_initSettingsStep();
 
     // Bloqueando funções
-    washMach_lockElement(['excluir', 'voltar', 'proximo', 'salvar']);
+    washMach_lockElement(['proximo', 'salvar']);
 
     // Escondendo outras opções para lavagem
     washMach_hideElement([washMach_form_box.agua, washMach_form_box.aquecer]);
@@ -23,7 +23,7 @@ window.onload = function() {
     $('#a22_widget_washMach_input_Lavar').click(function() {
         if(washMach_form_input.Lavar) { // Lavar já ativado
             washMach_form_input.Lavar = false; // Desativando Lavar
-            washMach_hideElement(washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao); // Mostrando seção da água
+            washMach_Element(washMach_form_box.agua, washMach_form_box.aquecer); // Mostrando seção da água
             return washMach_lockElement(['Centrifugar', 'Dreno']); // Destrancando elementos Centrifugar e Dreno
         }
 
@@ -39,7 +39,6 @@ window.onload = function() {
             washMach_form_input.Dreno = false; // Desativando Dreno
 
             washMach_lockElement(['Lavar', 'Dreno']); // Trancando / Destrancando Lavar e Drenar
-            washMach_showElement(washMach_form_box.sabao); // Escondendo secão Sabão
 
             $('a22_widget_washMach_input_Lavar').toggleClass('a22_widget_washMach_input_checked'); // Alterando CSS para desativado
             return $('#a22_widget_washMach_input_Dreno').toggleClass('a22_widget_washMach_input_checked'); // Alterando CSS para ativado
@@ -50,7 +49,6 @@ window.onload = function() {
         
         if(!washMach_form_input.Dreno) { // Dreno desativado
             washMach_lockElement('Lavar'); // Trancando / Destrancando Lavar
-            washMach_hideElement(washMach_form_box.sabao); // Escondendo seção Sabão
             $('#a22_widget_washMach_input_Dreno').toggleClass('a22_widget_washMach_input_checked'); // Alterando CSS para ativado
             washMach_form_input.Dreno = true;
         }
@@ -61,7 +59,6 @@ window.onload = function() {
     // Botão Dreno
     $('#a22_widget_washMach_input_Dreno').click(function() {
         washMach_lockElement('Lavar'); // Trancando / Destrancando Lavar
-        washMach_hideElement(washMach_form_box.sabao); // Escondendo secão Sabão
 
         if(washMach_form_input.Dreno) { // Dreno ativado
             washMach_showElement(washMach_form_box.sabao); // Mostrando seção Água
@@ -120,12 +117,6 @@ window.onload = function() {
         washMach_form_input.AquecerAgua = true; // Ativando Aquecer Água
     });
 
-    // Campo Temperatura da Água
-    $('#a22_widget_washMach_input_TempAgua').change(function() { // Quando o valor de Temperatura da Água for alterado
-        if(washMach_form_input.AquecerAgua && $(this).prop('value') <= 0) // Verificando se Aquecer Água está ativado && Temperatura da Água é menor ou igual a 0
-            return washMach_hideElement(washMach_form_box.sabao); // Escondendo seção Sabão            
-    });
-
     $("input[type='button']").click(function() { // Alterando classe CSS quando o input for clicado
         $(this).toggleClass('a22_widget_washMach_input_checked');
     });
@@ -163,55 +154,15 @@ window.onload = function() {
     });
 }
 
-// Função que salva os passos e envia para o ThingsBoard
-function washMach_step_save() {
-    $('#a22_widget_washMach_widgetProgress_container').css({'border' : '2px solid lightgreen', 'text-align' : 'center'})
-    $('#a22_widget_washMach_widgetProgress').text('Programação salva com sucesso!'); // Alterando texto do Widget Header
-
-    washMach_json_history[washMach_stepCurrent-1] = washMach_form_get_values(); // Obtendo dados do formulário
-    washMach_json = washMach_step_mountJson(washMach_json_history);
-}
-
-// Função que gerencia o passo atual da programação da máquina
-function washMach_step_next() {
-    let stepContainValues = false;
-
-    washMach_stepCurrent++; // Incrementando ao passo atual
-    $('#a22_widget_washMach_widgetProgress').text('Passo '+washMach_stepCurrent); // Alterando texto do Widget Header
-
-    console.log('1')
-
-    Object.keys(washMach_form_input).keys(key => { // Lendo os valores
-        if(typeof washMach_json_history[washMach_stepCurrent-1][key] == 'number') { // É um campo númerico
-            if(washMach_json_history[washMach_stepCurrent-1][key] > 0) { // Se o campo foi preenchido
-                $(`#a22_widget_washMach_input_${key}`).prop('value', washMach_json_history[washMach_stepCurrent-1][key]); // Inserindo o valor no campo
-                stepContainValues = true; // Informando que o passo continha valores preenchidos
-            }
-        } else { // É um campo booleano
-            if(washMach_json_history[washMach_stepCurrent-1][key]) { // Se a opção foi selecionada
-                $(`#a22_widget_washMach_input_${key}`).click(); // Ativando a opção
-                stepContainValues = true; // Informando que o passo continha valores preenchidos
-            }
-        }
-        console.log('2')
-    });
-
-    console.log(`history: ${washMach_json_history}`);
-
-    if(!stepContainValues) { // Caso o passo não tenha valores preenchidos
-        washMach_json_history[washMach_stepCurrent-2] = washMach_form_get_values(); // Obtendo dados do formulário
-        washMach_cleanForm(); // Limpando dados do formulário
+// Função que exclui o passo atual
+function washMach_step_delete() {
+    if(washMach_stepCurrent <= 1) {
+        washMach_unlockAllElements();
+        return washMach_cleanForm();
     }
-
-    if(washMach_form_lockedElements.indexOf('a22_widget_washMach_input_voltar' > 0)) // Voltar ainda trancado
-        washMach_lockElement('voltar'); // Destrancando Voltar
-
-    if(washMach_form_lockedElements.indexOf('a22_widget_washMach_input_proximo' == -1)) {
-        washMach_lockElement(['excluir', 'proximo', 'salvar']); // Trancando Funções
-        $('#a22_widget_washMach_input_excluir').addClass('a22_widget_washMach_input_locked');
-        $('#a22_widget_washMach_input_proximo').addClass('a22_widget_washMach_input_locked');
-        $('#a22_widget_washMach_input_salvar').addClass('a22_widget_washMach_input_locked');
-    } // Voltar ainda trancado
+    
+    washMach_json_history.splice(washMach_stepCurrent-1, 1);
+    washMach_step_back();
 }
 
 // Função que preenche o formulário com os dados do passo anterior
@@ -227,26 +178,26 @@ function washMach_step_back() {
     $('#a22_widget_washMach_widgetProgress').text('Passo '+washMach_stepCurrent); // Alterando texto do Widget Header
 }
 
-// Função que exclui o passo atual
-function washMach_step_delete() {
-    if(washMach_stepCurrent <= 1) {
-        washMach_unlockAllElements();
-        return washMach_cleanForm();
-    }
-    
-    washMach_json_history.splice(washMach_stepCurrent-1, 1);
-    washMach_step_back();
+// Função que gerencia o passo atual da programação da máquina
+function washMach_step_next() {
+    washMach_stepCurrent++; // Incrementando ao passo atual
+    $('#a22_widget_washMach_widgetProgress').text('Passo '+washMach_stepCurrent); // Alterando texto do Widget Header
+
+    washMach_json_history[washMach_stepCurrent-2] = washMach_form_get_values(); // Obtendo dados do formulário
+    washMach_cleanForm(); // Limpando dados do formulário
+
+    washMach_lockElement(['proximo', 'salvar']);
 }
 
-// Função que monta o JSON final para enviar
-function washMach_step_mountJson() {
-    let washMach_finalJson = {};
+// Função que salva os passos e envia para o ThingsBoard
+function washMach_step_save() {
+    $('#a22_widget_washMach_widgetProgress_container').css({'border' : '2px solid lightgreen', 'text-align' : 'center'})
+    $('#a22_widget_washMach_widgetProgress').text('Programação salva com sucesso!'); // Alterando texto do Widget Header
 
-    Object.keys(washMach_json_history).forEach(key => {
-        washMach_finalJson[key] = JSON.stringify(washMach_json_history); // Montando o JSON
-    });
+    washMach_json_history[washMach_stepCurrent-1] = washMach_form_get_values(); // Obtendo dados do formulário
+    washMach_json = washMach_step_mountJson(washMach_json_history);
 
-    return washMach_finalJson;
+    console.log(washMach_json);
 }
 
 // Função que limpa dados do formulário
@@ -254,7 +205,7 @@ function washMach_cleanForm() {
     $('input[type="number"]').prop('value', 0); // Definindo os valores numéricos para 0
 
     washMach_unlockAllElements(); // Liberando todos os elementos trancados
-    washMach_hideElement([washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao]); // Escondendo elementos
+    washMach_hideElement([washMach_form_box.agua, washMach_form_box.aquecer]); // Escondendo elementos
 
     washMach_form_input = washMach_initSettingsStep();
 }
@@ -277,6 +228,28 @@ function washMach_form_get_values() {
             stepValues[key] = Number($(`#a22_widget_washMach_input_${key}`).prop('value'));
     });
     return stepValues;
+}
+
+// Função chamada para destrancar as funções
+function washMach_unlockFunctions() {
+    washMach_form_input = washMach_form_get_values(); // Obtendo dados do formulário para verificação
+    if(washMach_stepCurrent > 1 && washMach_form_lockedElements.indexOf('a22_widget_washMach_input_voltar') > -1) // Passo 2 ou superior e está trancado
+        washMach_lockElement('a22_widget_washMach_input_voltar'); // Destrancando função Voltar
+
+    if(washMach_form_input.Lavar) { // Se Lavar estiver selecionado
+        if(washMach_form_input.CmAgua <= 0) return; // Se CmAgua não foi preenchido
+        if(!washMach_form_input.AguaFria && !washMach_form_input.AguaQuente) return; // Se Água Fria e Água Quente não foram selecionados
+        if(washMach_form_input.AquecerAgua && washMach_form_input.TempAgua <= 0) return; // Se Aquecer Água está ativo e Temperatura da Água não foi preenchido
+        if(washMach_form_input.RPM <= 0) return; // Se RPM não foi preenchido
+    } else if(!washMach_form_input.Dreno) return; // Se Lavar, Centrifugar e/ou Dreno não foram selecionados
+
+    if(washMach_form_input.Centrifugar && washMach_form_input.RPM <= 0)
+        return;
+
+    if(washMach_form_input.Tempo <= 0) return; // Se Tempo não foi preenchido
+
+    if(washMach_form_lockedElements.indexOf('a22_widget_washMach_input_proximo') > -1)
+        washMach_lockElement(['proximo', 'salvar']); // Destrancando funções Proximo e Salvar
 }
 
 // Função que desabilita e habilita funções da máquina de serem selecionadas
@@ -363,52 +336,13 @@ function washMach_step_insertData(stepToInsert) {
     });
 }
 
-// Função chamada para destrancar as funções
-function washMach_unlockFunctions() {
-    washMach_form_input = washMach_form_get_values(); // Obtendo dados do formulário para verificação
 
-    if(washMach_verifyFormData()) { // Se todos os dados estiverem consistentes
-        // BLOQUEAR FUNÇÕES
-    }
-        
-}
+// Função que monta o JSON final para enviar
+function washMach_step_mountJson() {
+    let washMach_finalJson = {};
 
-function _washMach_unlockFunctions() { // TRANCAR funções
-    if(washMach_form_lockedElements.indexOf('a22_widget_washMach_input_proximo') > 0) // Funções já trancadas
-        return;
-
-    washMach_lockElement(['excluir', 'proximo', 'salvar']); // Destrancando funções Excluir, Proximo e Salvar
-}
-
-function washMach_verifyFormData() {
-    if(washMach_form_input.Lavar) { // Se Lavar estiver selecionado
-        if(washMach_form_input.CmAgua <= 0) return false; // Se CmAgua não foi preenchido
-        if(!washMach_form_input.AguaFria && !washMach_form_input.AguaQuente) return false; // Se Água Fria e Água Quente não foram selecionados
-        if(washMach_form_input.AquecerAgua && washMach_form_input.TempAgua <= 0) return false; // Se Aquecer Água está ativo e Temperatura da Água não foi preenchido
-    } else if(!washMach_form_input.Centrifugar && !washMach_form_input.Dreno) return false; // Se Lavar, Centrifugar e/ou Dreno não foram selecionados
-
-    if(washMach_form_input.Centrifugar)
-        if(washMach_form_input.RPM <= 0) return false; // Se RPM não foi preenchido
-
-    if(washMach_form_input.Tempo <= 0) return false; // Se Tempo não foi preenchido
-    return true;
-}
-
-// Enviando o JSON para o ThingsBoard
-function step_send_final_json() {
-    let stepAttributes = [], entityId = {
-        entityType: "DEVICE",
-        id: "5e6e0110-d7b6-11ec-8715-a95ef7ab7919"
-    }, entityAttributeType = "SHARED_SCOPE";
-    
-    stepAttributes.push({
-        key: $('#a22_widget_washMach_widgetProgramationStep').val()+"teste",
-        value: washMach_json
+    Object.keys(washMach_json_history).forEach(key => {
+        washMach_finalJson[key] = JSON.stringify(washMach_json_history); // Montando o JSON
     });
-    
-    self.ctx.attributeService.saveEntityAttributes(entityId, entityAttributeType, stepAttributes).subscribe(
-        function success() {
-            self.ctx.$scope.error = "";
-            self.ctx.detectChanges();
-        });
+    return washMach_finalJson;
 }
