@@ -1,4 +1,6 @@
-let 
+// Variáveis
+let
+    washMach_CanUnlockFunc = true,
     washMach_form_lockedElements = [],
     washMach_json_history = [],
     washMach_form_box = {},
@@ -7,42 +9,21 @@ let
     washMach_json;
 
 window.onload = function() {
-    // Variáveis
     washMach_form_box = washMach_getBoxes();
-
     washMach_form_input = washMach_initSettingsStep();
 
+    // Bloqueando funções
+    washMach_lockElement(['excluir', 'voltar', 'proximo', 'salvar']);
+
     // Escondendo outras opções para lavagem
-    washMach_hideElement([washMach_form_box.lcd, washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao]);
+    washMach_hideElement([washMach_form_box.agua, washMach_form_box.aquecer]);
     washMach_hideElement($('#input_TempAgua'));
-
-    $("input[type='button']").click(function() { // Alterando classe CSS quando o input for clicado
-  
-        $(this).toggleClass('a22_widget_washMach_input_checked');
-    });
-
-    $('input[type="number"]').change(function() {
-        if($(this).prop('value') < 0)
-            $(this).prop('value', 0);
-    });
-
-    $('input[type="number"]').prop('value', 0);
-
-    // Campo Tempo de Execução
-    $('#a22_widget_washMach_input_Tempo').change(function() {
-        if($(this).prop('value') > 0) { // Veirificando se Tempo de Execução é maior que 0
-            washMach_showElement(washMach_form_box.lcd); // Mostrando seção LCD
-            washMach_showElement(washMach_form_box.sabao); // Mostrando seção LCD
-        } else {
-            washMach_hideElement(washMach_form_box.lcd); // Mostrando seção LCD
-            washMach_hideElement(washMach_form_box.sabao); // Escondendo seção LCD
-        }
-    });
 
     // Botão Lavar
     $('#a22_widget_washMach_input_Lavar').click(function() {
         if(washMach_form_input.Lavar) { // Lavar já ativado
             washMach_form_input.Lavar = false; // Desativando Lavar
+            washMach_hideElement(washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao); // Mostrando seção da água
             return washMach_lockElement(['Centrifugar', 'Dreno']); // Destrancando elementos Centrifugar e Dreno
         }
 
@@ -57,16 +38,19 @@ window.onload = function() {
             washMach_form_input.Centrifugar = false; // Desativando Centrifugar
             washMach_form_input.Dreno = false; // Desativando Dreno
 
-            washMach_lockElement(['Lavar', 'Dreno', 'Soap1', 'Soap2', 'Soap3', 'Soap4', 'Soap5']); // Trancando / Destrancando Lavar, Drenar e Sabão X...
+            washMach_lockElement(['Lavar', 'Dreno']); // Trancando / Destrancando Lavar e Drenar
+            washMach_showElement(washMach_form_box.sabao); // Escondendo secão Sabão
 
             $('a22_widget_washMach_input_Lavar').toggleClass('a22_widget_washMach_input_checked'); // Alterando CSS para desativado
             return $('#a22_widget_washMach_input_Dreno').toggleClass('a22_widget_washMach_input_checked'); // Alterando CSS para ativado
         } 
         
+        washMach_hideElement(washMach_form_box.agua); // Escondendo seção Água
         washMach_lockElement('Dreno'); // Trancando Dreno
         
         if(!washMach_form_input.Dreno) { // Dreno desativado
-            washMach_lockElement(['Lavar', 'Soap1', 'Soap2', 'Soap3', 'Soap4', 'Soap5']); // Trancando / Destrancando Lavar e Sabão X...
+            washMach_lockElement('Lavar'); // Trancando / Destrancando Lavar
+            washMach_hideElement(washMach_form_box.sabao); // Escondendo secão Sabão
             $('#a22_widget_washMach_input_Dreno').toggleClass('a22_widget_washMach_input_checked'); // Alterando CSS para ativado
             washMach_form_input.Dreno = true;
         }
@@ -76,11 +60,14 @@ window.onload = function() {
 
     // Botão Dreno
     $('#a22_widget_washMach_input_Dreno').click(function() {
-        washMach_lockElement(['Lavar', 'Soap1', 'Soap2', 'Soap3', 'Soap4', 'Soap5']); // Trancando / Destrancando Lavar e Sabão X...
+        washMach_lockElement('Lavar'); // Trancando / Destrancando Lavar
+        washMach_hideElement(washMach_form_box.sabao); // Escondendo secão Sabão
 
-        if(washMach_form_input.Dreno) // Dreno ativado
+        if(washMach_form_input.Dreno) { // Dreno ativado
+            washMach_showElement(washMach_form_box.sabao); // Mostrando seção Água
             return washMach_form_input.Dreno = false; // Desativando Dreno
-        
+        }
+
         washMach_form_input.Dreno = true; // Ativando Dreno
     });
 
@@ -118,7 +105,7 @@ window.onload = function() {
             washMach_showElement(washMach_form_box.aquecer);
 
         if($(this).prop('value') <= 0) // Verificando se Centímetros de água é menor ou igual a 0
-            washMach_hideElement(washMach_form_box.aquecer); // Escondendo seção Aquecer
+            return washMach_hideElement(washMach_form_box.aquecer); // Escondendo seção Aquecer
     });
 
     // Botão Aquecer Água
@@ -127,7 +114,7 @@ window.onload = function() {
             washMach_hideElement($('#input_TempAgua')); // Escondendo elemento Temperatura da Água
             return washMach_form_input.AquecerAgua = false; // Desativando Aquecer Água
         }
-
+        
         $('#input_TempAgua').css({'display' : 'block'}); // Mostrando elemento Temperatura da Água
 
         washMach_form_input.AquecerAgua = true; // Ativando Aquecer Água
@@ -136,44 +123,42 @@ window.onload = function() {
     // Campo Temperatura da Água
     $('#a22_widget_washMach_input_TempAgua').change(function() { // Quando o valor de Temperatura da Água for alterado
         if(washMach_form_input.AquecerAgua && $(this).prop('value') <= 0) // Verificando se Aquecer Água está ativado && Temperatura da Água é menor ou igual a 0
-            washMach_hideElement(washMach_form_box.sabao); // Escondendo seção Sabão
-        
-        if($('#a22_widget_washMach_input_RPM').prop('value') > 0) // Verificando se RPM é maior que 0
-            washMach_showElement(washMach_form_box.sabao) // Mostrando seção Sabão
+            return washMach_hideElement(washMach_form_box.sabao); // Escondendo seção Sabão            
     });
 
-    // Campo Rotações por Minuto
-    $('#a22_widget_washMach_input_RPM').change(function() { // Quando o valor de RPM for alterado
-        if($(this).prop('value') > 0) // Verificando se RPM é maior que 0
-            washMach_showElement(washMach_form_box.sabao); // Mostrando seção Sabão
-        else
-            washMach_hideElement(washMach_form_box.sabao); // Escondendo seção Sabão
-        
-        if(washMach_form_input.AquecerAgua) // Verificando se Aquecer Água está ativado
-            if($('#a22_widget_washMach_input_TempAgua').prop('value') <= 0) // Verificando se Temperatura da Água é menor ou igual a 0
-                washMach_hideElement(washMach_form_box.sabao); // Escondendo seção Sabão
+    $("input[type='button']").click(function() { // Alterando classe CSS quando o input for clicado
+        $(this).toggleClass('a22_widget_washMach_input_checked');
     });
 
-    for(let i=1; i < 6; i++) {
-        $(`#a22_widget_washMach_input_Soap${i}`).change(function() {
-            if(washMach_form_input.Dreno)
-                $(`#a22_widget_washMach_input_Soap${i}`).prop('value', 0);
-        });
-    }
+    $('input[type="number"]').change(function() {
+        if($(this).prop('value') < 0)
+            $(this).prop('value', 0);
+    });
 
-    $('#a22_widget_washMach_function_proximo').click(function() {
+    $('input[type="number"]').prop('value', 0);
+
+    $('.a22_widget_washMach_input_check').click(function() { // Quando qualquer input selecionável for clicado
+        washMach_unlockFunctions(); // Destrancando funções
+    });
+
+    $('.a22_widget_washMach_input_number').change(function() { // Quando qualquer input numérico for alterado
+        washMach_unlockFunctions(); // Destrancando funções
+    });
+
+    $('#a22_widget_washMach_input_proximo').click(function() {
         washMach_step_next();
     });
 
-    $('#a22_widget_washMach_function_voltar').click(function() {
+    $('#a22_widget_washMach_input_voltar').click(function() {
         washMach_step_back();
+
     });
 
-    $('#a22_widget_washMach_function_excluir').click(function() {
+    $('#a22_widget_washMach_input_excluir').click(function() {
         washMach_step_delete();
     });
 
-    $('#a22_widget_washMach_function_salvar').click(function() {
+    $('#a22_widget_washMach_input_salvar').click(function() {
         washMach_step_save();
     });
 }
@@ -233,8 +218,10 @@ function washMach_step_back() {
 
 // Função que exclui o passo atual
 function washMach_step_delete() {
-    if(washMach_stepCurrent <= 1)
+    if(washMach_stepCurrent <= 1) {
+        washMach_unlockAllElements();
         return washMach_cleanForm();
+    }
     
     washMach_json_history.splice(washMach_stepCurrent-1, 1);
     washMach_step_back();
@@ -253,7 +240,7 @@ function washMach_step_mountJson() {
 
 // Função que limpa dados do formulário
 function washMach_cleanForm() {
-    $('input[type="number"]').prop('value', 0); // Definindo os valores vazios para 0
+    $('input[type="number"]').prop('value', 0); // Definindo os valores numéricos para 0
 
     washMach_unlockAllElements(); // Liberando todos os elementos trancados
     washMach_hideElement([washMach_form_box.lcd, washMach_form_box.agua, washMach_form_box.aquecer, washMach_form_box.sabao]); // Escondendo elementos
@@ -278,7 +265,6 @@ function washMach_form_get_values() {
         else
             stepValues[key] = Number($(`#a22_widget_washMach_input_${key}`).prop('value'));
     });
-
     return stepValues;
 }
 
@@ -297,7 +283,7 @@ function washMach_lockElement(toLock) {
         });
     else { // Item único
         if(washMach_form_lockedElements.indexOf(`a22_widget_washMach_input_${toLock}`) >= 0) // Verificando se o item já está na lista
-            washMach_form_lockedElements.splice(washMach_form_lockedElements.indexOf(`a22_widget_washMach_input_${toLock[key]}`)); // Removendo item da lista
+            washMach_form_lockedElements.splice(washMach_form_lockedElements.indexOf(`a22_widget_washMach_input_${toLock}`)); // Removendo item da lista
         else
             washMach_form_lockedElements.push(`a22_widget_washMach_input_${toLock}`); // Adicionando item na lista
         
@@ -365,3 +351,27 @@ function washMach_step_insertData(stepToInsert) {
             $(`#a22_widget_washMach_input_${key}`).click(); // Ativando a opção
     });
 }
+
+// Função chamada para destrancar as funções
+function washMach_unlockFunctions() {
+    washMach_form_input = washMach_form_get_values(); // Obtendo dados do formulário para verificação
+
+    console.log(washMach_form_input.TempAgua);
+
+    if(washMach_form_input.Lavar) { // Se Lavar estiver selecionado
+        if(washMach_form_input.CmAgua <= 0) return; // Se CmAgua não foi preenchido
+        if(!washMach_form_input.AguaFria && !washMach_form_input.AguaQuente) return; // Se Água Fria e Água Quente não foram selecionados
+        if(washMach_form_input.AquecerAgua && washMach_form_input.TempAgua <= 0) return; // Se Aquecer Água está ativo e Temperatura da Água não foi preenchido
+        if(washMach_form_input.RPM <= 0) return; // Se RPM não foi preenchido
+    } else if(!washMach_form_input.Centrifugar && !washMach_form_input.Dreno) return; // Se Lavar, Centrifugar e/ou Dreno não foram selecionados
+
+
+    if(washMach_form_input.Tempo <= 0) return; // Se Tempo não foi preenchido
+
+    washMach_lockElement(['excluir', 'proximo', 'salvar']); // Destrancando funções Excluir, Proximo e Salvar
+    if(washMach_stepCurrent > 1) // Passo 2 ou superior
+        washMach_lockElement('voltar'); // Destrancando função Voltar    
+}
+
+
+// if(washMach_form_input.) return; // 
