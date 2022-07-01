@@ -139,3 +139,29 @@
     color: white;
     border: 2px solid red;
 }
+
+/* Mensagem de sucesso */
+#a22_widget_washMach_saved_message {
+    text-align: center;
+    height: 80vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+#a22_widget_washMach_saved_message_title {
+    font-family: 'Arimo';
+    font-weight: 200;
+    letter-spacing: 1px;
+    font-size: 2.5em;
+    text-shadow: 1px 1px 2px blue;
+}
+
+#a22_widget_washMach_saved_message_counter {
+    padding-top: 1%;
+    font-family: 'Roboto';
+    font-size: 2.5em;
+    letter-spacing: 7px;
+    text-shadow: 1px 1px 2px blue;
+}

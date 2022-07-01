@@ -214,9 +214,9 @@ function washMach_can_unlock_functions() {
         if(!washMach_form_inputs.AguaFria.prop('selected') && !washMach_form_inputs.AguaQuente.prop('selected')) return washMach_lock_element(['proximo', 'salvar', 'pronto']); // Se Água Fria e Água Quente não foram ativos
         if(washMach_form_inputs.CmAgua.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar', 'pronto']); // Se CmAgua não foi preenchido
         if(washMach_form_inputs.AquecerAgua.prop('selected') && washMach_form_inputs.TempAgua.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar', 'pronto']); // Se Aquecer Água ativada e TempAgua não foi preenchido
-        if(washMach_form_inputs.Tempo.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar']); // Se Tempo não foi preenchido
 
         washMach_unlock_element(['proximo', 'salvar', 'pronto']); // Desbloqueando funções
+        if(washMach_form_inputs.Tempo.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar']); // Se Tempo não foi preenchido
     }
 }
 
@@ -307,7 +307,10 @@ function washMach_step_next() {
 
 // Função que salva a programação
 function washMach_step_save() {
-    washMach_form_save_data(); // Salvando dados do passo atual
+    // washMach_form_save_data(); // Salvando dados do passo atual
+    // washMach_json_mount(); // Montando o JSON para enviar
+    // washMach_json_send(); // Enviando o JSON
+    washMach_form_show_saved_message(); // Mostrando mensagem de salvo
 }
 
 // Função que insere os dados de um passo salvo na programação
@@ -338,21 +341,39 @@ function washMach_form_save_data() {
 
 // Função que monta o JSON para enviar para o ThingsBoard
 function washMach_json_mount() {
-    Object.keys(washMach_json_history).forEach(k => {
-        console.log(k); // K = 0, 1, 2
+    let = washMach_json_mounted = [];
+    Object.keys(washMach_json_history).forEach(k => { // Percorrendo todos os índices do array
+        if(washMach_json_history[k].Centrifugar || washMach_json_history[k].Dreno) {
+            // Limpando valores desnecessários
+            washMach_json_history[k].CmAgua       = 0;
+            washMach_json_history[k].TempAgua     = 0;
+            washMach_json_history[k].AguaFria     = false;
+            washMach_json_history[k].AguaQuente   = false;
+            washMach_json_history[k].AquecerAgua  = false;
+            washMach_json_history[k].Soap1        = 0;
+            washMach_json_history[k].Soap2        = 0;
+            washMach_json_history[k].Soap3        = 0;
+            washMach_json_history[k].Soap4        = 0;
+            washMach_json_history[k].Soap5        = 0;
+        }
+
+        if(!washMach_json_history[k].AquecerAgua) washMach_json_history[k].TempAgua = 0;
+        washMach_json_mounted[k] = washMach_json_history[k];
     });
+
+    washMach_json_final = JSON.stringify(washMach_json_mounted);
 }
 
-
-function washMach_json_send(stepJsonToSend) {
+// Função que envia o JSON para o ThingsBoard
+function washMach_json_send() {
     let stepAttributes = [], entityId = {
         entityType: "DEVICE",
         id: "5e6e0110-d7b6-11ec-8715-a95ef7ab7919"
     }, entityAttributeType = "SHARED_SCOPE";
 
     stepAttributes.push({
-        key: "pTeste",
-        value: stepJsonToSend
+        key: "testeHoje",
+        value: washMach_json_final
     });
 
     self.ctx.attributeService.saveEntityAttributes(entityId, entityAttributeType, stepAttributes).subscribe(
@@ -360,4 +381,30 @@ function washMach_json_send(stepJsonToSend) {
             self.ctx.$scope.error = "";
             self.ctx.detectChanges();
         });
+}
+
+function washMach_form_show_saved_message() {
+    $('#a22_widget_washMach').css({'display' : 'none'}); // Sumindo com o elemento pai do formulário
+    $('#a22_widget_washMach_saved_message').css({'display' : 'flex'}); // Mostrando mensagem
+
+    let i = 10; // Contagem
+    let interval = setInterval(() => { // Contagem
+        i--; // Diminuindo o valor
+        $('#a22_widget_washMach_saved_message_counter').text(i); // Alterando o texto
+        if(i == 0) { // Contagem acabou            
+            clearInterval(interval); // Finalizando repetição
+            washMach_form_reset(); // Resetando o formulário
+        }
+    }, 1000);
+}
+
+function washMach_form_reset() {
+    washMach_step_current = 1;
+    washMach_json_final = {};
+    washMach_json_history = [];
+    washMach_form_inputs.StepName.prop('value', 'Passo 1');
+    washMach_buttons_props_init();
+
+    $('#a22_widget_washMach').css({'display' : 'block'}); // Sumindo com o elemento pai do formulário
+    $('#a22_widget_washMach_saved_message').css({'display' : 'none'}); // Mostrando mensagem
 }
