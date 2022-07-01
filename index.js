@@ -46,6 +46,12 @@ function washMach_manage_buttons(washMach_btnClicked) {
         case 'a22_widget_washMach_input_Lavar': {
             washMach_option_lavar(); // Lavar selecionado
             break;
+        } case 'a22_widget_washMach_input_Centrifugar': {
+            washMach_option_centrifugar();
+            break;
+        } case 'a22_widget_washMach_input_Dreno': {
+            washMach_option_drenar();
+            break;
         } case 'a22_widget_washMach_input_excluir': {
             washMach_step_delete(); // Deletar passo
             break;
@@ -85,12 +91,33 @@ function washMach_button_enable(washMach_btnToEnable) {
 
 // Função que gerencia o botão Lavar
 function washMach_option_lavar() {
-    if($('#a22_widget_washMach_input_Lavar').prop('selected')) { // Lavar já ativo
+    if(washMach_form_inputs['Lavar'].prop('selected')) { // Lavar já ativo
         washMach_unlock_element(['Dreno', 'Centrifugar']); // Desbloqueando opções Dreno e Centrifugar
     } else {
         washMach_lock_element(['Dreno', 'Centrifugar']); // Bloqueando opções Dreno e Centrifugar
         washMach_screen_lavar();  // Mostrando as opções para Lavar
     }
+}
+
+// Função que gerencia o botão Centrifugar
+function washMach_option_centrifugar() {
+    if(washMach_form_inputs['Centrifugar'].prop('selected')) { // Centrifugar ativo
+        washMach_unlock_element(['Lavar', 'Dreno']); // Desbloqueando Lavar e Dreno
+        $('#input_RPM').css({'display' : 'none'}); // Escondendo RPM
+        washMach_button_disable(washMach_form_inputs['Dreno']); // Desativando Dreno
+    } else {
+        washMach_lock_element(['Lavar', 'Dreno']); // Bloqueando Lavar e Dreno
+        $('#input_RPM').css({'display' : 'block'}); // Mostrando RPM
+        washMach_button_enable(washMach_form_inputs['Dreno']); // Ativando Dreno
+    }
+}
+
+// Função que gerencia o botão Drenar
+function washMach_option_drenar() {
+    if(washMach_form_inputs['Dreno']) // Dreno ativo
+        washMach_lock_element('Lavar');
+    else
+        washMach_unlock_element('Lavar');
 }
 
 // Função que bloqueia um elemento
@@ -209,8 +236,10 @@ function washMach_form_get_inputs() {
 
 // Função que delete um passo da programação
 function washMach_step_delete() {
-    if(washMach_step_current <= 1)
-        return washMach_buttons_props_init();
+    if(washMach_step_current <= 1) {
+        washMach_buttons_props_init();
+        return washMach_lock_element(['voltar', 'proximo', 'salvar', 'pronto']);
+    }
     
     washMach_json_history.splice(washMach_stepCurrent-1, 1);
     washMach_step_back();
