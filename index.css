@@ -125,6 +125,7 @@
     width: 20%;
     cursor: pointer;
     transition: .2s;
+    text-align: center;
 }
 
 #a22_widget_washMach_function_excluir {

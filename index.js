@@ -1,12 +1,12 @@
 let 
     washMach_form_boxes = {},
-    washMach_form_inputss = {},
+    washMach_form_inputs = {},
     washMach_json_history = [],
     washMach_step_current = 1;
 
 window.onload = function() {
     washMach_form_boxes = washMach_form_get_boxes(); // Obtendo as seções do formulário
-    washMach_form_inputss = washMach_form_get_inputs(); // Obtendo os inputs do formulário
+    washMach_form_inputs = washMach_form_get_inputs(); // Obtendo os inputs do formulário
     
     $('input[type="button"]').click(function() { // Quando qualquer botão for clicado
         washMach_manage_buttons($(this)); // Chamando a função que gerencia os botões
@@ -64,17 +64,23 @@ function washMach_manage_buttons(washMach_btnClicked) {
         }
     }
 
-    if(washMach_btnClicked.prop('id') == 'a22_widget_washMach_input_pronto') return;
+    if(washMach_btnClicked.prop('class') == 'a22_widget_washMach_function_button' || washMach_btnClicked.prop('id') == 'a22_widget_washMach_input_pronto') return;
 
-    if(washMach_btnClicked.prop('selected')) { // Desativar o botão
-        washMach_btnClicked.prop('selected', false); // Desativando botão
-        washMach_btnClicked.removeClass('a22_widget_washMach_input_checked'); // Alterando CSS
-    } else { // Ativar o botão
-        washMach_btnClicked.prop('selected', true); // Ativando o botão
-        washMach_btnClicked.addClass('a22_widget_washMach_input_checked'); // Alterando CSS
-    }
+    // Desativar o botão
+    if(washMach_btnClicked.prop('selected')) washMach_button_disable(washMach_btnClicked); // Desativando o botão
+    else washMach_button_enable(washMach_btnClicked); // Ativando o botão
 
     washMach_can_unlock_functions(); // Verificando se todos os dados necessários foram preenchidos
+}
+
+function washMach_button_disable(washMach_btnToDisable) {
+    washMach_btnToDisable.prop('selected', false); // Alterando valor para desativado
+    washMach_btnToDisable.removeClass('a22_widget_washMach_input_checked'); // Alterando CSS
+}
+
+function washMach_button_enable(washMach_btnToEnable) {
+    washMach_btnToEnable.prop('selected', true); // Alterando valor para ativado
+    washMach_btnToEnable.addClass('a22_widget_washMach_input_checked'); // Alterando CSS
 }
 
 // Função que gerencia o botão Lavar
@@ -160,18 +166,18 @@ function washMach_screen_lavar() {
 function washMach_can_unlock_functions() {
     let washMach_soap_setted = false, washMach_canUnlock = true;
 
-    if(washMach_form_inputss.Centrifugar.prop('selected') || washMach_form_inputss.Dreno.prop('selected')) // Se Centrifugar ou Dreno foi selecionado
-        if(washMach_form_inputss.Tempo.prop('value') > 0) return washMach_unlock_element(['proximo', 'salvar', 'voltar']);
+    if(washMach_form_inputs.Centrifugar.prop('selected') || washMach_form_inputs.Dreno.prop('selected')) // Se Centrifugar ou Dreno foi selecionado
+        if(washMach_form_inputs.Tempo.prop('value') > 0) return washMach_unlock_element(['proximo', 'salvar', 'voltar']);
 
-    if(washMach_form_inputss.Lavar.prop('selected')) {
+    if(washMach_form_inputs.Lavar.prop('selected')) {
         for(let i=1; i < 6; i++) // Percorrendo as 5 opções de sabão
-            if(washMach_form_inputss[`Soap${i}`].prop('value') > 0) // Se algum sabão foi preenchido
+            if(washMach_form_inputs[`Soap${i}`].prop('value') > 0) // Se algum sabão foi preenchido
                 washMach_soap_setted = true; // Informando que algum sabão foi preenchido
 
-        if(!washMach_form_inputss.AguaFria.prop('selected') && !washMach_form_inputss.AguaQuente.prop('selected')) washMach_canUnlock = false // Se Água Fria e Água Quente não foram ativos
-        if(washMach_form_inputss.CmAgua.prop('value') == 0) washMach_canUnlock = false; // Se CmAgua não foi preenchido
-        if(washMach_form_inputss.AquecerAgua.prop('selected') && washMach_form_inputss.TempAgua.prop('value') == 0) washMach_canUnlock = false; // Se Aquecer Água ativada e TempAgua não foi preenchido
-        if(washMach_form_inputss.Tempo.prop('value') > 0) washMach_canUnlock = false; // Se Tempo não foi preenchido
+        if(!washMach_form_inputs.AguaFria.prop('selected') && !washMach_form_inputs.AguaQuente.prop('selected')) washMach_canUnlock = false // Se Água Fria e Água Quente não foram ativos
+        if(washMach_form_inputs.CmAgua.prop('value') == 0) washMach_canUnlock = false; // Se CmAgua não foi preenchido
+        if(washMach_form_inputs.AquecerAgua.prop('selected') && washMach_form_inputs.TempAgua.prop('value') == 0) washMach_canUnlock = false; // Se Aquecer Água ativada e TempAgua não foi preenchido
+        if(washMach_form_inputs.Tempo.prop('value') > 0) washMach_canUnlock = false; // Se Tempo não foi preenchido
 
         if(washMach_canUnlock || washMach_soap_setted) // ARRUMAR
             return washMach_unlock_element(['proximo', 'salvar', 'voltar', 'pronto']); // Desbloqueando funções
@@ -201,8 +207,59 @@ function washMach_form_get_inputs() {
     };
 }
 
+// Função que delete um passo da programação
 function washMach_step_delete() {
-    alert('a')
     if(washMach_step_current <= 1)
         return washMach_buttons_props_init();
+    
+    washMach_json_history.splice(washMach_stepCurrent-1, 1);
+    washMach_step_back();
+}
+
+// Função que volta um passo da programação
+function washMach_step_back() {
+    washMach_form_save_data(); // Salvando os dados do passo atual
+    washMach_buttons_props_init(); // Resetando dados do formulário
+    washMach_form_insert_data(washMach_step_current-2); // Preenchendo o formulário com os dados do passo anterior
+
+    washMach_step_current--; // Decrementando do passo atual
+    washMach_form_inputs.StepName.prop('value', `Passo ${washMach_step_current}`); // Alterando o nome do passo
+}
+
+// Função que avança um passo da programação
+function washMach_step_next() {
+    washMach_form_save_data(); // Salvando os dados do passo atual
+    washMach_buttons_props_init(); // Resetando dados do formulário
+
+    if(washMach_json_history[washMach_step_current]) // Existem dados inseridos
+        washMach_form_insert_data(washMach_step_current); // Inserindo os dados
+
+    washMach_step_current++; // Incrementando ao passoa atual
+    washMach_form_inputs.StepName.prop('value', `Passo ${washMach_step_current}`); // Alterando o nome do passo
+}
+
+// Função que insere os dados de um passo salvo na programação
+function washMach_form_insert_data(washMach_stepToInsData) {
+    Object.keys(washMach_form_inputs).forEach(k => { // Percorrendo todos os atributos do passo
+        if(washMach_form_inputs[k].prop('type') == 'button' && washMach_json_history[washMach_stepToInsData][k])// É um botão e foi ativado
+            washMach_button_enable(washMach_form_inputs[k]); // Ativando o botão
+        else if(washMach_form_inputs[k].prop('type') == 'number')
+            washMach_form_inputs[k].prop('value', washMach_json_history[washMach_stepToInsData][k]); // Preenchendo com o valor do passo
+    });
+
+    washMach_form_inputs['StepName'].prop('value', washMach_json_history[washMach_stepToInsData]['StepName']); // Preenchendo o nome do passo
+}
+
+// Função que salva os dados do passo atual
+function washMach_form_save_data() {
+    washMach_json_history[washMach_step_current-1] = {}; // Definindo índice do array como objeto
+
+    Object.keys(washMach_form_inputs).forEach(k => { // Percorrendo todos os atributos do passo
+        if(washMach_form_inputs[k].prop('type') == 'button') // É um botão; valor booleano
+            washMach_json_history[washMach_step_current-1][k] = washMach_form_inputs[k].prop('selected'); // Pegando se está ou não selecionado
+        else if(washMach_form_inputs[k].prop('type') == 'number')
+            washMach_json_history[washMach_step_current-1][k] = Number(washMach_form_inputs[k].prop('value')); // Pegando o valor do input
+    });
+
+    washMach_json_history[washMach_step_current-1]['StepName'] = washMach_form_inputs['StepName'].prop('value'); // Obtendo o nome do passo
 }
