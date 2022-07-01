@@ -20,6 +20,7 @@ window.onload = function() {
     washMach_buttons_props_init(); // Setando as propriedades dos botões e inputs
 
     washMach_screen_initial(); // Mostrando a tela inicial da configuração
+    washMach_lock_element(['proximo', 'salvar', 'voltar', 'pronto']);
 }
 
 // Função que define todas as propriedas necessárias para os botões e inputs
@@ -38,7 +39,6 @@ function washMach_buttons_props_init() {
 
     // Removendo CSS dos botões e inputs
     $('input').removeClass('a22_widget_washMach_input_locked a22_widget_washMach_input_checked');
-    washMach_lock_element(['proximo', 'salvar', 'pronto']); // Bloqueando funções
 }
 
 // Função que gerencia os clicks de todos os botões
@@ -245,7 +245,8 @@ function washMach_form_get_inputs() {
 // Função que delete um passo da programação
 function washMach_step_delete() {
     if(washMach_step_current <= 1) {
-        return washMach_buttons_props_init();
+        washMach_buttons_props_init();
+        return washMach_lock_element(['voltar', 'proximo', 'salvar', 'pronto']);
     }
     
     washMach_json_history.splice(washMach_stepCurrent-1, 1);
@@ -286,6 +287,7 @@ function washMach_form_lcd_verifications() {
 function washMach_step_next() {
     washMach_form_save_data(); // Salvando os dados do passo atual
     washMach_buttons_props_init(); // Resetando dados do formulário
+    washMach_lock_element(['proximo', 'salvar', 'pronto']); // Bloqueando funções
 
     if(washMach_json_history[washMach_step_current]) // Existem dados inseridos
         washMach_form_insert_data(washMach_step_current); // Inserindo os dados
@@ -305,9 +307,9 @@ function washMach_step_next() {
 
 // Função que salva a programação
 function washMach_step_save() {
-    washMach_form_save_data(); // Salvando dados do passo atual
-    washMach_json_mount(); // Montando o JSON para enviar
-    washMach_json_send(); // Enviando o JSON
+    // washMach_form_save_data(); // Salvando dados do passo atual
+    // washMach_json_mount(); // Montando o JSON para enviar
+    // washMach_json_send(); // Enviando o JSON
     washMach_form_show_saved_message(); // Mostrando mensagem de salvo
 }
 
@@ -384,8 +386,7 @@ function washMach_json_send() {
 function washMach_form_show_saved_message() {
     $('#a22_widget_washMach').css({'display' : 'none'}); // Sumindo com o elemento pai do formulário
     $('#a22_widget_washMach_saved_message').css({'display' : 'flex'}); // Mostrando mensagem
-    $('#a22_widget_washMach_saved_message_counter').text('10'); // Alterando o texto
-    
+
     let i = 10; // Contagem
     let interval = setInterval(() => { // Contagem
         i--; // Diminuindo o valor
