@@ -341,10 +341,6 @@ function washMach_form_save_data() {
 
 // Função que monta o JSON para enviar para o ThingsBoard
 function washMach_json_mount() {
-    washMach_json_history.push({ "StepName" : String(), "RPM" : 15, "Tempo" : 15, "CmAgua" : 15, "TempAgua" : 15, "AguaFria" : false, "AguaQuente"    : true, "AquecerAgua"   : true, "Lavar": true, "Centrifugar": false, "Dreno": false, "Soap1": 15, "Soap2": 15, "Soap3": 15, "Soap4": 15, "Soap5": 15});
-    washMach_json_history.push({ "StepName" : String(), "RPM" : 10, "Tempo" : 10, "CmAgua" : 10, "TempAgua" : 10, "AguaFria" : false, "AguaQuente"    : true, "AquecerAgua"   : true, "Lavar": true, "Centrifugar": false, "Dreno": false, "Soap1": 15, "Soap2": 15, "Soap3": 15, "Soap4": 15, "Soap5": 15});
-    washMach_json_history.push({ "StepName" : String(), "RPM" : 5, "Tempo" : 5, "CmAgua" : 5, "TempAgua" : 5, "AguaFria" : false, "AguaQuente"    : true, "AquecerAgua"   : true, "Lavar": true, "Centrifugar": false, "Dreno": false, "Soap1": 15, "Soap2": 15, "Soap3": 15, "Soap4": 15, "Soap5": 15});
-
     let washMach_json_mounted = {};
     Object.keys(washMach_json_history).forEach(k => { // Percorrendo todos os índices do array
         if(washMach_json_history[k].Centrifugar || washMach_json_history[k].Dreno) {
@@ -366,6 +362,7 @@ function washMach_json_mount() {
     });
 
     washMach_json_final = JSON.stringify(washMach_json_mounted); // Com "\"
+    console.log(washMach_json_final);
 }
 
 // Função que envia o JSON para o ThingsBoard
