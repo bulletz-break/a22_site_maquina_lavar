@@ -2,7 +2,8 @@ let
     washMach_form_boxes = {},
     washMach_form_inputs = {},
     washMach_json_history = [],
-    washMach_step_current = 1;
+    washMach_step_current = 1
+    washMach_json_final = {};
 
 window.onload = function() {
     washMach_form_boxes = washMach_form_get_boxes(); // Obtendo as seções do formulário
@@ -191,24 +192,31 @@ function washMach_screen_lavar() {
 
 // Função que verifica se os dados necessários foram preenchidos para prosseguir a programação
 function washMach_can_unlock_functions() {
-    let washMach_soap_setted = false, washMach_canUnlock = true;
+    if(washMach_form_inputs.Centrifugar.prop('selected')) // Centrifugar está ativo
+        if(washMach_form_inputs.Tempo.prop('value') > 0) // Tempo foi preenchido
+            if(washMach_form_inputs.RPM.prop('value') > 0) // Se RPM foi preenchido
+                return washMach_unlock_element(['proximo', 'salvar', 'voltar']);
+    
+    if(washMach_form_inputs.Dreno.prop('selected') && !washMach_form_inputs.Centrifugar.prop('selected')) // Se Dreno está ativo e Centrifugar está desativado
+        if(washMach_form_inputs.Tempo.prop('value') > 0) // Se tempo foi preenchido
+            washMach_unlock_element(['proximo', 'salvar', 'voltar']);
 
-    if(washMach_form_inputs.Centrifugar.prop('selected') || washMach_form_inputs.Dreno.prop('selected')) // Se Centrifugar ou Dreno foi selecionado
-        if(washMach_form_inputs.Tempo.prop('value') > 0) return washMach_unlock_element(['proximo', 'salvar', 'voltar']);
 
     if(washMach_form_inputs.Lavar.prop('selected')) {
         for(let i=1; i < 6; i++) // Percorrendo as 5 opções de sabão
-            if(washMach_form_inputs[`Soap${i}`].prop('value') > 0) // Se algum sabão foi preenchido
-                washMach_soap_setted = true; // Informando que algum sabão foi preenchido
+            if(washMach_form_inputs[`Soap${i}`].prop('value') > 0) { // Se algum sabão foi preenchido
+                washMach_unlock_element(['salvar', 'pronto']); // Informando que algum sabão foi preenchido
+                if(washMach_form_inputs.Tempo.prop('value') > 0)
+                    return washMach_unlock_element('proximo'); // Informando que algum sabão foi preenchido
+                return;
+            }
 
-        if(!washMach_form_inputs.AguaFria.prop('selected') && !washMach_form_inputs.AguaQuente.prop('selected')) washMach_canUnlock = false // Se Água Fria e Água Quente não foram ativos
-        if(washMach_form_inputs.CmAgua.prop('value') == 0) washMach_canUnlock = false; // Se CmAgua não foi preenchido
-        if(washMach_form_inputs.AquecerAgua.prop('selected') && washMach_form_inputs.TempAgua.prop('value') == 0) washMach_canUnlock = false; // Se Aquecer Água ativada e TempAgua não foi preenchido
-        if(washMach_form_inputs.Tempo.prop('value') > 0) washMach_canUnlock = false; // Se Tempo não foi preenchido
+        if(!washMach_form_inputs.AguaFria.prop('selected') && !washMach_form_inputs.AguaQuente.prop('selected')) return washMach_lock_element(['proximo', 'salvar', 'pronto']); // Se Água Fria e Água Quente não foram ativos
+        if(washMach_form_inputs.CmAgua.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar', 'pronto']); // Se CmAgua não foi preenchido
+        if(washMach_form_inputs.AquecerAgua.prop('selected') && washMach_form_inputs.TempAgua.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar', 'pronto']); // Se Aquecer Água ativada e TempAgua não foi preenchido
+        if(washMach_form_inputs.Tempo.prop('value') == 0) return washMach_lock_element(['proximo', 'salvar']); // Se Tempo não foi preenchido
 
-        if(washMach_canUnlock || washMach_soap_setted) // ARRUMAR
-            return washMach_unlock_element(['proximo', 'salvar', 'voltar', 'pronto']); // Desbloqueando funções
-        washMach_lock_element(['proximo', 'salvar', 'voltar', 'pronto']); // Bloqueando funções
+        washMach_unlock_element(['proximo', 'salvar', 'pronto']); // Desbloqueando funções
     }
 }
 
@@ -247,24 +255,59 @@ function washMach_step_delete() {
 
 // Função que volta um passo da programação
 function washMach_step_back() {
+    if(washMach_step_current <= 1) return;
+
     washMach_form_save_data(); // Salvando os dados do passo atual
     washMach_buttons_props_init(); // Resetando dados do formulário
     washMach_form_insert_data(washMach_step_current-2); // Preenchendo o formulário com os dados do passo anterior
 
+    washMach_form_lcd_verifications(); // Verificando os botões LCD
+
     washMach_step_current--; // Decrementando do passo atual
     washMach_form_inputs.StepName.prop('value', `Passo ${washMach_step_current}`); // Alterando o nome do passo
+}
+
+function washMach_form_lcd_verifications() {
+    if(washMach_form_inputs['Lavar'].prop('selected')) { // Se lavar estiver ativo
+        washMach_form_inputs['Lavar'].prop('selected', false);
+        washMach_option_lavar();
+        washMach_form_inputs['Lavar'].prop('selected', true);
+    } else if(washMach_form_inputs['Centrifugar'].prop('selected')) { // Se Centrifugar estiver ativo
+        washMach_form_inputs['Centrifugar'].prop('selected', false);
+        washMach_option_centrifugar();
+        washMach_form_inputs['Centrifugar'].prop('selected', true);
+    } else if(washMach_form_inputs['Dreno'].prop('selected')) {  // Se Dreno foi ativado
+        washMach_form_inputs['Dreno'].prop('selected', false);
+        washMach_option_drenar();
+        washMach_form_inputs['Dreno'].prop('selected', true);
+    }
 }
 
 // Função que avança um passo da programação
 function washMach_step_next() {
     washMach_form_save_data(); // Salvando os dados do passo atual
     washMach_buttons_props_init(); // Resetando dados do formulário
+    washMach_lock_element(['proximo', 'salvar', 'pronto']); // Bloqueando funções
 
     if(washMach_json_history[washMach_step_current]) // Existem dados inseridos
         washMach_form_insert_data(washMach_step_current); // Inserindo os dados
 
+    if(!washMach_form_inputs.Centrifugar.prop('selected'))
+        $('#input_RPM').css({'display' : 'none'});
+
     washMach_step_current++; // Incrementando ao passoa atual
     washMach_form_inputs.StepName.prop('value', `Passo ${washMach_step_current}`); // Alterando o nome do passo
+    washMach_can_unlock_functions(); // Verificando se o passo já tem os dados necessários
+    washMach_form_lcd_verifications(); // Verificando os botões LCD
+
+    setTimeout(() => {
+        $('#a22_widget_washMach_input_proximo').removeClass('a22_widget_washMach_input_checked') // Removendo estilização (algum bug)
+    });
+}
+
+// Função que salva a programação
+function washMach_step_save() {
+    washMach_form_save_data(); // Salvando dados do passo atual
 }
 
 // Função que insere os dados de um passo salvo na programação
@@ -291,4 +334,30 @@ function washMach_form_save_data() {
     });
 
     washMach_json_history[washMach_step_current-1]['StepName'] = washMach_form_inputs['StepName'].prop('value'); // Obtendo o nome do passo
+}
+
+// Função que monta o JSON para enviar para o ThingsBoard
+function washMach_json_mount() {
+    Object.keys(washMach_json_history).forEach(k => {
+        console.log(k); // K = 0, 1, 2
+    });
+}
+
+
+function washMach_json_send(stepJsonToSend) {
+    let stepAttributes = [], entityId = {
+        entityType: "DEVICE",
+        id: "5e6e0110-d7b6-11ec-8715-a95ef7ab7919"
+    }, entityAttributeType = "SHARED_SCOPE";
+
+    stepAttributes.push({
+        key: "pTeste",
+        value: stepJsonToSend
+    });
+
+    self.ctx.attributeService.saveEntityAttributes(entityId, entityAttributeType, stepAttributes).subscribe(
+        function success() {
+            self.ctx.$scope.error = "";
+            self.ctx.detectChanges();
+        });
 }
