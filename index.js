@@ -307,9 +307,9 @@ function washMach_step_next() {
 
 // Função que salva a programação
 function washMach_step_save() {
-    // washMach_form_save_data(); // Salvando dados do passo atual
-    // washMach_json_mount(); // Montando o JSON para enviar
-    // washMach_json_send(); // Enviando o JSON
+    washMach_form_save_data(); // Salvando dados do passo atual
+    washMach_json_mount(); // Montando o JSON para enviar
+    washMach_json_send(); // Enviando o JSON
     washMach_form_show_saved_message(); // Mostrando mensagem de salvo
 }
 
@@ -386,6 +386,7 @@ function washMach_json_send() {
 function washMach_form_show_saved_message() {
     $('#a22_widget_washMach').css({'display' : 'none'}); // Sumindo com o elemento pai do formulário
     $('#a22_widget_washMach_saved_message').css({'display' : 'flex'}); // Mostrando mensagem
+    $('#a22_widget_washMach_saved_message_counter').text('10'); // Alterando o texto
 
     let i = 10; // Contagem
     let interval = setInterval(() => { // Contagem
@@ -404,6 +405,7 @@ function washMach_form_reset() {
     washMach_json_history = [];
     washMach_form_inputs.StepName.prop('value', 'Passo 1');
     washMach_buttons_props_init();
+    washMach_lock_element(['proximo', 'salvar', 'pronto']);
 
     $('#a22_widget_washMach').css({'display' : 'block'}); // Sumindo com o elemento pai do formulário
     $('#a22_widget_washMach_saved_message').css({'display' : 'none'}); // Mostrando mensagem
