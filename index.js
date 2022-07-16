@@ -264,7 +264,6 @@ function washMach_step_back() {
     washMach_form_lcd_verifications(); // Verificando os botões LCD
 
     washMach_step_current--; // Decrementando do passo atual
-    washMach_form_inputs.StepName.prop('value', `Passo ${washMach_step_current}`); // Alterando o nome do passo
 }
 
 function washMach_form_lcd_verifications() {
@@ -367,21 +366,21 @@ function washMach_json_mount() {
 
 // Função que envia o JSON para o ThingsBoard
 function washMach_json_send() {
-    let stepAttributes = [], entityId = {
-        entityType: "DEVICE",
-        id: "5e6e0110-d7b6-11ec-8715-a95ef7ab7919"
-    }, entityAttributeType = "SHARED_SCOPE";
+    // let stepAttributes = [], entityId = {
+    //     entityType: "DEVICE",
+    //     id: "5e6e0110-d7b6-11ec-8715-a95ef7ab7919"
+    // }, entityAttributeType = "SHARED_SCOPE";
 
-    stepAttributes.push({
-        key: "testeHoje",
-        value: washMach_json_final
-    });
+    // stepAttributes.push({
+    //     key: "testeHoje",
+    //     value: washMach_json_final
+    // });
 
-    self.ctx.attributeService.saveEntityAttributes(entityId, entityAttributeType, stepAttributes).subscribe(
-        function success() {
-            self.ctx.$scope.error = "";
-            self.ctx.detectChanges();
-        }); 
+    // self.ctx.attributeService.saveEntityAttributes(entityId, entityAttributeType, stepAttributes).subscribe(
+    //     function success() {
+    //         self.ctx.$scope.error = "";
+    //         self.ctx.detectChanges();
+    //     }); 
 }
 
 function washMach_form_show_saved_message() {
