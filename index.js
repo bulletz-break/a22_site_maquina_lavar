@@ -264,7 +264,6 @@ function washMach_step_back() {
     washMach_form_lcd_verifications(); // Verificando os botões LCD
 
     washMach_step_current--; // Decrementando do passo atual
-    washMach_form_inputs.StepName.prop('value', `Passo ${washMach_step_current}`); // Alterando o nome do passo
 }
 
 function washMach_form_lcd_verifications() {
@@ -381,7 +380,11 @@ function washMach_json_send() {
     //     function success() {
     //         self.ctx.$scope.error = "";
     //         self.ctx.detectChanges();
+<<<<<<< HEAD
     //     });
+=======
+    //     }); 
+>>>>>>> 4878f4def2f06ac999cafb39c372db668e19baa9
 }
 
 function washMach_form_show_saved_message() {
