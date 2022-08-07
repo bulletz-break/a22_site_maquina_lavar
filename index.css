@@ -195,10 +195,6 @@
 }
 
 /* Selecionar lavagem */
-#a22_widget_washMach_input_programName_container {
-    display: none;
-}
-
 #a22_widget_washMach_form_box_select_program_container {
     display: flex;
     justify-content: center;

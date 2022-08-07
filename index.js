@@ -1,15 +1,13 @@
 let
     washMach_form_boxes = {},
     washMach_form_inputs = {},
-    washMach_json_history = {},
+    washMach_json_history = [],
     washMach_step_current = 1,
     washMach_last_program_founded;
 
 window.onload = function() {
     washMach_form_boxes = washMach_form_get_boxes(); // Obtendo as seções do formulário
     washMach_form_inputs = washMach_form_get_inputs(); // Obtendo os inputs do formulário
-
-    washMach_select_program_init(); // Iniciando tela para selecionar a lavagem a ser programada
 
     $('input[type="button"]').click(
         function() { // Quando qualquer botão for clicado
@@ -25,71 +23,44 @@ window.onload = function() {
     
     $('#a22_widget_washMach_select').change(
         function() {
-            if($('#a22_widget_washMach_select').prop('value') == 'new_p')
-                $('#a22_widget_washMach_input_programName_container').css({'display' : 'block'});
-            else
+            if($('#a22_widget_washMach_select').prop('value') == '0') {
                 $('#a22_widget_washMach_input_programName_container').css({'display' : 'none'});
+                washMach_lock_element(['go']);
+            } else if($('#a22_widget_washMach_select').prop('value') == 'new_p') {
+                $('#a22_widget_washMach_input_programName_container').css({'display' : 'block'});
+                if(washMach_program_have_name())
+                    washMach_unlock_element(['go']);
+            } else {
+                $('#a22_widget_washMach_input_programName_container').css({'display' : 'none'});
+                if(washMach_program_have_name())
+                    washMach_unlock_element(['go']);
+            }
                 
         }
     );
 
+    $('#a22_widget_washMach_input_programName').change(function() {
+        if(washMach_program_have_name()) washMach_unlock_element(['go']);
+        else washMach_lock_element(['go']);
+    });
+
     washMach_buttons_props_init(); // Setando as propriedades dos botões e inputs
 
     washMach_screen_choose_program(); // Mostrando a tela inicial da configuração
-    washMach_lock_element(['proximo', 'salvar', 'voltar', 'pronto']);
+    washMach_lock_element(['proximo', 'salvar', 'voltar', 'pronto', 'go']);
 }
 
-// Função que inicia a tela para a seleção da lavagem a ser programada
-function washMach_select_program_init() {
-    // washMach_select_program_get_options(); // Obtendo as opções de lavagem
-    console.log('Opções de lavagem obtidas!');
+// Função chamada para validar o nome da lavagem
+function washMach_program_have_name() {
+    if($('#a22_widget_washMach_input_programName').prop('value').length < 3) return false; // Nome muito pequeno ou vazio
+    return true;
 }
 
 // Função chamada quando a programação da lavagem é selecionada
 function washMach_program_selected() {
     // Criar nova lavagem
-    if($('#a22_widget_washMach_select').prop('value') == 'new_p') {
-        if($('a22_widget_washMach_input_programName').prop('value') != '')
-            washMach_json_history['programName'] = $('#a22_widget_washMach_input_programName').prop('value');
-        else
-            washMach_json_history['programName'] = `p${washMach_last_program_founded}`;
-    }
+    washMach_json_history['programName'] = $('#a22_widget_washMach_input_programName').prop('value');
     return washMach_screen_lcd(); // Alteranando tela
-}
-
-// Função que pega as lavagens já existentes
-function washMach_select_program_get_options() {
-    console.clear();
-    
-    let
-        washMach_select_program_count       = 1,        // Contagem do programa (++)
-        washMach_select_program_exists      = false,    // O programa existe
-        washMach_select_program_intervalo,              // Variável que carrega o evento de intervalo
-        washMach_select_program_attr_called = false;    // Chave para identificar se o programa já foi chamado
-
-    washMach_select_program_intervalo = setInterval(() => {
-        if(washMach_select_program_attr_called) return; // O programa ainda não foi retornado
-        washMach_select_program_attr_called = true;     // Informando que o programa já foi chamado
-        self.ctx.attributeService.getEntityAttributes(ds.entity.id, 'SHARED_SCOPE', [`p${washMach_select_program_count}`]).subscribe(
-            function success(attr) {
-                washMach_select_program_attr_called = false;
-                if(attr.length > 0) {
-                    washMach_select_program_exists = true;
-                    console.log(attr);
-                    washMach_select_program_count++;
-                    $('#a22_widget_washMach_select').append(`<option value="${attr[0].key}"> ${attr[0].value.programName} </option>`);
-                } else {
-                    washMach_select_program_exists = false;
-                    clearInterval(washMach_select_program_intervalo);
-                    $('#a22_widget_washMach_select').append('<option value="new_p"> Nova lavagem </option>');
-                    if(washMach_select_program_count <= 1)
-                        $('#a22_widget_washMach_input_programName_container').css({'display' : 'block'});
-                    washMach_last_program_founded = washMach_select_program_count;
-                }
-            }
-        );
-        
-    }, 100);
 }
 
 // Função que define todas as propriedas necessárias para os botões e inputs
@@ -431,9 +402,9 @@ function washMach_step_next() {
 
 // Função que salva a programação
 function washMach_step_save() {
+    console.log(washMach_json_history);
     washMach_form_save_data(); // Salvando dados do passo atual
     washMach_json_mount(); // Montando o JSON para enviar
-    // washMach_json_send(); // Enviando o JSON
     washMach_form_show_saved_message(); // Mostrando mensagem de salvo
 }
 
@@ -488,25 +459,6 @@ function washMach_json_mount() {
         if (!washMach_json_history[k].AquecerAgua)
             washMach_json_history[k].TempAgua = 0;
     });
-}
-
-// Função que envia o JSON para o ThingsBoard
-function washMach_json_send() {
-    let stepAttributes = [],
-        entityId = ds.entity.id,
-        entityAttributeType = "SHARED_SCOPE";
-
-    stepAttributes.push({
-        key: `p${washMach_last_program_founded}`,
-        value: washMach_json_history
-    });
-
-    self.ctx.attributeService.saveEntityAttributes(entityId,
-        entityAttributeType, stepAttributes).subscribe(
-        function success() {
-            self.ctx.$scope.error = "";
-            self.ctx.detectChanges();
-        });
 }
 
 function washMach_form_show_saved_message() {
