@@ -178,7 +178,7 @@
     flex-direction: column;
 }
 
-#a22_widget_washMach_saved_message_title {
+#a22_widget_washMach_saved_message_title, #a22_widget_washMach_input_copy_json {
     font-family: 'Arimo';
     font-weight: 200;
     letter-spacing: 1px;

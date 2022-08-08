@@ -1,7 +1,7 @@
 let
     washMach_form_boxes = {},
     washMach_form_inputs = {},
-    washMach_json_history = [],
+    washMach_json_history = {},
     washMach_step_current = 1,
     washMach_last_program_founded;
 
@@ -44,6 +44,11 @@ window.onload = function() {
         else washMach_lock_element(['go']);
     });
 
+    $('#a22_widget_washMach_input_copy_json').click(function() {
+        navigator.clipboard.writeText(JSON.stringify(washMach_json_history));
+        $('#a22_widget_washMach_input_copy_json').text('JSON copiado com sucesso!');
+    });
+
     washMach_buttons_props_init(); // Setando as propriedades dos botões e inputs
 
     washMach_screen_choose_program(); // Mostrando a tela inicial da configuração
@@ -60,7 +65,7 @@ function washMach_program_have_name() {
 function washMach_program_selected() {
     // Criar nova lavagem
     washMach_json_history['programName'] = $('#a22_widget_washMach_input_programName').prop('value');
-    return washMach_screen_lcd(); // Alteranando tela
+    return washMach_screen_lcd(); // Alternando tela
 }
 
 // Função que define todas as propriedas necessárias para os botões e inputs
@@ -464,32 +469,4 @@ function washMach_json_mount() {
 function washMach_form_show_saved_message() {
     $('#a22_widget_washMach').css({'display': 'none'}); // Sumindo com o elemento pai do formulário
     $('#a22_widget_washMach_saved_message').css({'display': 'flex'}); // Mostrando mensagem
-    $('#a22_widget_washMach_saved_message_counter').text('10'); // Alterando o texto
-
-    let i = 10; // Contagem
-    let interval = setInterval(() => { // Contagem
-        i--; // Diminuindo o valor
-        $('#a22_widget_washMach_saved_message_counter')
-            .text(i); // Alterando o texto
-        if (i == 0) { // Contagem acabou            
-            clearInterval(
-                interval); // Finalizando repetição
-            washMach_form_reset(); // Resetando o formulário
-        }
-    }, 1000);
-}
-
-function washMach_form_reset() {
-    washMach_step_current = 1;
-    washMach_json_history = [];
-    washMach_form_inputs.StepName.prop('value', 'Nome do passo - 1');
-    washMach_buttons_props_init();
-    washMach_lock_element(['proximo', 'salvar', 'pronto']);
-
-    $('#a22_widget_washMach').css({
-        'display': 'block'
-    }); // Sumindo com o elemento pai do formulário
-    $('#a22_widget_washMach_saved_message').css({
-        'display': 'none'
-    }); // Mostrando mensagem
 }
